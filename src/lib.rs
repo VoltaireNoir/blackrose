@@ -1,9 +1,14 @@
 pub mod hooks {
-    use penrose::{core::State, x11rb::RustConn, Xid};
+    use penrose::{
+        core::{hooks::StateHook, State},
+        x::XConn,
+        x11rb::RustConn,
+        Xid,
+    };
 
-    pub fn startup_progs(_state: &mut State<RustConn>, _conn: &RustConn) -> penrose::Result<()> {
-        // penrose::util::spawn("picom")?;
-        penrose::util::spawn("/home/volt/.fehbg")
+    /// Create a startup hook by passing a list of programs to spawn
+    pub fn startup_programs<X: XConn>(list: &'static [&'static str]) -> impl StateHook<X> {
+        move |_: &mut State<X>, _: &X| list.iter().try_for_each(|p| penrose::util::spawn(*p))
     }
 
     pub fn manage_place_at_tail(

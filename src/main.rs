@@ -123,7 +123,11 @@ fn config() -> Config<RustConn> {
         default_layouts: layouts(),
         ..Default::default()
     };
-    config.compose_or_set_startup_hook(blackrose::hooks::startup_progs);
+    let startup = blackrose::hooks::startup_programs(&[
+        "sxhkd -c /home/volt/.config/sxhkd/sxhkdrcspectr",
+        "/home/volt/.fehbg",
+    ]);
+    config.compose_or_set_startup_hook(startup);
     config.compose_or_set_manage_hook(blackrose::hooks::manage_place_at_tail);
     add_ewmh_hooks(config)
 }
